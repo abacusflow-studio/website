@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小算盘-智能零售进销存系统</title>
+    <meta name="description" content="AbacusFlow 是一款面向零售的智能进销存系统，支持采购管理、库存监控、销售分析，助力企业高效运转。">
+    <meta property="og:title" content="AbacusFlow · 智能零售进销存系统" />
+    <meta property="og:description" content="零售智能进销存解决方案，采购、销售、库存全打通。" />
+    <meta property="og:image" content="/logo.png" />
+    <meta property="og:url" content="https://abacusflow.cn" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            0% { filter: drop-shadow(0 0 5px rgba(102, 126, 234, 0.5)); }
+            100% { filter: drop-shadow(0 0 15px rgba(102, 126, 234, 0.8)); }
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* 主要内容区域 */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(255, 255, 255, 0.05) 10px,
+                    rgba(255, 255, 255, 0.05) 20px
+            );
+            animation: moveStripes 20s linear infinite;
+        }
+
+        @keyframes moveStripes {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero h3 {
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            opacity: 0.8;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 0.4s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 核心优势区域 */
+        .core-advantages {
+            padding: 5rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+            position: relative;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 4rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* 自适应三列 */
+            gap: 2rem;
+            margin-top: 4rem;
+            margin-bottom: 2rem;
+        }
+
+        .advantage-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .advantage-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .advantage-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .advantage-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .advantage-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .advantage-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .advantage-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 auto;
+            max-width: 90%;
+            text-align: left;
+        }
+
+        .advantage-features li {
+            padding: 0.5rem 0;
+            color: #555;
+            font-size: 0.9rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .advantage-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+
+        /* 即将推出功能 */
+        .coming-soon {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            position: relative;
+        }
+
+        .coming-soon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 5px,
+                    rgba(255, 255, 255, 0.05) 5px,
+                    rgba(255, 255, 255, 0.05) 10px
+            );
+            animation: moveStripes 30s linear infinite;
+        }
+
+        .coming-soon .advantage-icon {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .coming-soon h3, .coming-soon p {
+            color: white;
+        }
+
+        .coming-soon .advantage-features li {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .coming-soon .advantage-features li::before {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* 产品展示区域 */
+        .product-showcase {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .showcase-carousel {
+            position: relative;
+            max-width: 1000px;
+            margin: 3rem auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #666;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            position: relative;
+        }
+
+        .carousel-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 15px;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .carousel-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        .carousel-info {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-info h4 {
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .carousel-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* 统计数据区域 */
+        .stats {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .stat-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        /* 页脚 */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 2rem 1rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #667eea;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .advantages-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .carousel-container {
+                height: 400px;
+            }
+        }
+
+        /* 滚动触发动画 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 浮动粒子效果 */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">AbacusFlow</div>
+        <ul class="nav-links">
+            <li><a href="#advantages">核心优势</a></li>
+            <li><a href="#product">产品展示</a></li>
+            <li><a href="#stats">发展现状</a></li>
+            <li><a href="#contact">联系我们</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- 主要展示区 -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>小算盘</h1>
+        <h3>AbacusFlow</h3>
+        <p>新一代智能零售进销存系统</p>
+        <div class="hero-subtitle">无处不在的灵活关联 • 深度数据挖掘 • 智能库存管理</div>
+        <a href="#contact" class="cta-button">联系我们体验</a>
+    </div>
+    <!-- 动态粒子 -->
+    <div class="particle" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="top: 60%; left: 20%; animation-delay: 1s;"></div>
+    <div class="particle" style="top: 30%; left: 80%; animation-delay: 2s;"></div>
+    <div class="particle" style="top: 70%; left: 90%; animation-delay: 3s;"></div>
+</section>
+
+<!-- 核心优势 -->
+<section class="core-advantages" id="advantages">
+    <div class="container">
+        <h2 class="section-title fade-in">核心优势</h2>
+        <p class="section-subtitle fade-in">基于领域驱动技术架构，打造极致用户体验</p>
+        <div class="advantages-grid">
+            <div class="advantage-card fade-in">
+                <div class="advantage-icon">🔗</div>
+                <h3>无处不在的灵活关联</h3>
+                <p>突破传统进销存系统的局限，实现库存、销售、采购、客户、供应商的全面深度关联。</p>
+                <ul class="advantage-features">
+                    <li>客户维度：查看历史交易金额、最近交易时间、偏好商品</li>
+                    <li>产品维度：实时库存、销售趋势、供应商信息、利润分析</li>
+                    <li>供应商维度：采购记录、付款状态、商品质量评估</li>
+                    <li>任意维度切换：一键从任何角度查看关联数据</li>
+                    <li>智能关联推荐：基于数据自动发现潜在关联</li>
+                </ul>
+            </div>
+            <div class="advantage-card fade-in">
+                <div class="advantage-icon">📊</div>
+                <h3>深度数据分析挖掘</h3>
+                <p>实现前所未有的数据洞察深度。</p>
+                <ul class="advantage-features">
+                    <li>销售利润趋势：多维度分析，精准预测</li>
+                    <li>产品价格跟踪：实时监控，智能定价建议</li>
+                    <li>热销产品榜单：动态排名，把握市场脉搏</li>
+                    <li>库存占比分析：优化库存结构，降低资金占用</li>
+                    <li>新老客户对比：深入了解客户价值变化</li>
+                    <!-- <li>自定义报表：拖拽式操作，随心所欲创建分析</li> -->
+                </ul>
+            </div>
+            <div class="advantage-card fade-in">
+                <div class="advantage-icon">📦</div>
+                <h3>智能库存管理</h3>
+                <p>告别传统表格式管理，采用一产品一库存模式，支持现代化资产管理需求。</p>
+                <ul class="advantage-features">
+                    <li>一产品一库存：清晰直观的库存结构</li>
+                    <li>一物一码：资产级别的精确追踪</li>
+                    <li>批次商品管理：采购销售全程跟踪</li>
+                    <li>智能预警：缺货风险提前预警</li>
+                    <li>实时监控：库存状态实时更新</li>
+                    <li>自动补货建议：基于销售趋势智能推荐</li>
+                </ul>
+            </div>
+            <div class="advantage-card fade-in">
+                <div class="advantage-icon">🔒</div>
+                <h3>数据安全保障</h3>
+                <p>企业级安全防护体系，让您的业务数据安全无忧。</p>
+                <ul class="advantage-features">
+                    <li>多重数据备份：自动备份，永不丢失</li>
+                    <li>权限精细管控：不同角色不同权限</li>
+                    <li>操作日志记录：所有操作可追溯</li>
+                    <li>数据加密存储：敏感信息安全保护</li>
+                    <li>访问安全控制：IP白名单和登录验证</li>
+                    <li>定期安全更新：持续优化安全防护</li>
+                </ul>
+            </div>
+            <div class="advantage-card fade-in">
+                <div class="advantage-icon">⚡</div>
+                <h3>极速操作体验</h3>
+                <p>基于现代化技术架构，打造如丝般顺滑的操作体验。</p>
+                <ul class="advantage-features">
+                    <li>秒级响应：所有操作瞬间完成</li>
+                    <li>智能搜索：输入关键词即可快速定位</li>
+                    <li>快捷键支持：键盘操作更高效</li>
+                    <li>批量操作：一键处理多个项目</li>
+                    <li>离线工作：网络中断也能正常使用</li>
+                    <li>数据同步：多端数据实时同步</li>
+                </ul>
+            </div>
+            <div class="advantage-card coming-soon fade-in">
+                <div class="advantage-icon">🚀</div>
+                <h3>即将推出</h3>
+                <p>我们正在加速开发更多强大功能，为您带来完整的企业级解决方案。</p>
+                <ul class="advantage-features">
+                    <li>产品条形码录入：摆脱低效录入，让您爱上录入</li>
+                    <li>人工智能助手：接入人工智能语言模型，让辅助"驾驶"帮您更好的掌舵</li>
+                    <li>多店管理：统一管理多个门店，实现连锁经营</li>
+                    <li>移动办公：手机端完整功能，随时随地管理</li>
+                    <li>安全保障：企业级安全防护，数据无忧</li>
+                    <li>API接口：与现有系统无缝对接</li>
+                    <li>高级权限：细粒度权限控制</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 产品展示 -->
+<section class="product-showcase" id="product">
+    <div class="container">
+        <h2 class="section-title fade-in">产品展示</h2>
+        <p class="section-subtitle fade-in">现代化界面设计，极致用户体验</p>
+        <div class="showcase-carousel fade-in">
+            <div class="carousel-container">
+                <div class="carousel-slide active" data-title="智能仪表盘" data-desc="全局概览，一目了然">
+                    <img src="/dashboard.png" alt="智能仪表盘">
+                    <div class="carousel-info">
+                        <h4>智能仪表盘</h4>
+                        <p>实时数据大屏，业务状况一目了然</p>
+                    </div>
+                </div>
+                <div class="carousel-slide" data-title="库存管理" data-desc="一产品一库存，智能化管理">
+                    <img src="/inventory.png" alt="库存管理">
+                    <div class="carousel-info">
+                        <h4>库存管理</h4>
+                        <p>一产品一库存，支持一物一码和批次管理</p>
+                    </div>
+                </div>
+                <div class="carousel-slide" data-title="销售管理" data-desc="高效开单，智能分析">
+                    <img src="/saleorder.png" alt="销售管理">
+                    <div class="carousel-info">
+                        <h4>销售管理</h4>
+                        <p>快速开单收银，深度关联分析</p>
+                    </div>
+                </div>
+                <div class="carousel-slide" data-title="采购管理" data-desc="供应商关联，智能采购">
+                    <img src="/purchseorder.png" alt="采购管理">
+                    <div class="carousel-info">
+                        <h4>采购管理</h4>
+                        <p>供应商深度关联，智能采购建议</p>
+                    </div>
+                </div>
+                <div class="carousel-slide" data-title="客户管理" data-desc="全方位客户画像">
+                    <img src="/customer.png" alt="客户管理">
+                    <div class="carousel-info">
+                        <h4>客户管理</h4>
+                        <p>360度客户画像，精准营销</p>
+                    </div>
+                </div>
+                <div class="carousel-slide" data-title="供应商管理" data-desc="供应链优化">
+                    <img src="/supplier.png" alt="供应商管理">
+                    <div class="carousel-info">
+                        <h4>供应商管理</h4>
+                        <p>供应链全程跟踪，优化采购决策</p>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-btn" onclick="prevSlide()">❮</button>
+                <button class="carousel-btn" onclick="nextSlide()">❯</button>
+            </div>
+            <div class="carousel-indicators">
+                <span class="indicator active" onclick="currentSlide(0)"></span>
+                <span class="indicator" onclick="currentSlide(1)"></span>
+                <span class="indicator" onclick="currentSlide(2)"></span>
+                <span class="indicator" onclick="currentSlide(3)"></span>
+                <span class="indicator" onclick="currentSlide(4)"></span>
+                <span class="indicator" onclick="currentSlide(5)"></span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 发展现状 -->
+<section class="stats" id="stats">
+    <div class="container">
+        <h2 class="section-title">发展现状</h2>
+        <p class="section-subtitle">秉承实实在在的原则，我们正在快速成长</p>
+        <div class="stats-grid">
+            <div class="stat-item fade-in">
+                <div class="stat-number">6+</div>
+                <div class="stat-label">核心功能模块</div>
+                <div class="stat-description">库存、销售、采购、客户、供应商、数据分析</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number">100+</div>
+                <div class="stat-label">数据关联维度</div>
+                <div class="stat-description">无处不在的灵活关联，任意维度数据互通</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number"><100ms</div>
+                <div class="stat-label">数据响应速度</div>
+                <div class="stat-description">基于现代化架构，极速数据处理</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">在线服务</div>
+                <div class="stat-description">云端部署，随时随地访问使用</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- 页脚 -->
+<footer class="footer" id="contact">
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="#advantages">核心优势</a>
+            <a href="#product">产品展示</a>
+            <a href="#stats">发展现状</a>
+        </div>
+        <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(255, 255, 255, 0.1); border-radius: 15px; backdrop-filter: blur(10px);">
+            <h3 style="margin-bottom: 1rem; color: #fff; font-size: 1.3rem;">联系我们</h3>
+            <p style="margin-bottom: 0.5rem; color: rgba(255, 255, 255, 0.9);">
+                <strong>邮箱：</strong>
+                <a href="mailto:1964302791@qq.com" style="color: #4facfe; text-decoration: none; transition: color 0.3s ease;">1964302791@qq.com</a>
+            </p>
+            <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; margin-top: 1rem;">
+                我们重视每一位用户的反馈，期待与您的交流
+            </p>
+        </div>
+        <p>&copy; 2025 AbacusFlow. 小算盘</p>
+        <a href="https://beian.miit.gov.cn" target="_blank">鲁ICP备2025171035号</a>
+<!--        <a href="http://www.beian.gov.cn/portal" target="_blank" style="margin-left: 8px;">-->
+<!--            🛡️<span style="margin-left:4px;">鲁公网安备 37010202012503号</span>-->
+<!--        </a>-->
+    </div>
+</footer>
+
+<script>
+    // 轮播功能
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const indicators = document.querySelectorAll('.indicator');
+    const totalSlides = slides.length;
+    let isHovered = false;
+
+    function showSlide(index) {
+        // 隐藏所有幻灯片
+        slides.forEach(slide => slide.classList.remove('active'));
+        indicators.forEach(indicator => indicator.classList.remove('active'));
+
+        // 显示当前幻灯片
+        slides[index].classList.add('active');
+        indicators[index].classList.add('active');
+
+        currentSlideIndex = index;
+    }
+
+    function nextSlide() {
+        if (!isHovered) {
+            const nextIndex = (currentSlideIndex + 1) % totalSlides;
+            showSlide(nextIndex);
+        }
+    }
+
+    function prevSlide() {
+        const prevIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+        showSlide(prevIndex);
+    }
+
+    function currentSlide(index) {
+        showSlide(index);
+    }
+
+    // 鼠标悬停控制滚动
+    const carousel = document.querySelector('.carousel-container');
+    carousel.addEventListener('mouseenter', () => {
+        isHovered = true;
+    });
+    carousel.addEventListener('mouseleave', () => {
+        isHovered = false;
+    });
+
+    // 自动播放轮播图
+    setInterval(nextSlide, 5000);
+
+    // 滚动动画
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    // 观察所有需要动画的元素
+    document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+    });
+
+    // 导航栏滚动效果
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+        } else {
+            navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+            navbar.style.boxShadow = 'none';
+        }
+    });
+
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>
