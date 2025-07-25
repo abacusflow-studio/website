@@ -5,8 +5,8 @@ services:
     networks:
       - abacusflow-network
     volumes:
-      - /opt/acme-https/www:/var/www/certbot:ro
-      - /opt/acme-https/letsencrypt:/etc/letsencrypt:ro
+      - /etc/letsencrypt/live/abacusflow.cn/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
+      - /etc/letsencrypt/live/abacusflow.cn/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
     ports:
       - "80:80"
       - "443:443"

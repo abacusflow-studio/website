@@ -1,23 +1,31 @@
+map "${REDIRECT_TO_HTTPS}" $redirect_url {
+    default "https://$host$request_uri";
+    "true" "https://$host$request_uri";
+    "false" "";
+}
+
 server {
     listen       80;
-    server_name  abacusflow.cn;
+    server_name  ABACUSFLOW_WEBSITE;
 
-    # 80端口始终提供https签名所需的接口
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
+    set $redirect_enabled "${REDIRECT_TO_HTTPS}";
+
+    if ($redirect_url) {
+        # HTTP 重定向到 HTTPS
+        return 301 $redirect_url;
     }
 
-    # HTTP 重定向到 HTTPS
-    return 301 https://$host$request_uri;
+   # --- 包含通用的 SPA 配置 ---
+   include /etc/nginx/snippets/common_spa.conf;
 }
 
 server {
     listen 443 ssl http2;
-    server_name abacusflow.cn;
+    server_name ABACUSFLOW_WEBSITE;
 
     # SSL 证书配置
-    ssl_certificate     /etc/letsencrypt/live/abacusflow.cn/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/abacusflow.cn/privkey.pem;
+    ssl_certificate     /etc/nginx/ssl/fullchain.pem;
+    ssl_certificate_key /etc/nginx/ssl/privkey.pem;
 
     # SSL 安全配置
     ssl_protocols TLSv1.2 TLSv1.3;
@@ -26,11 +34,6 @@ server {
     ssl_session_cache shared:SSL:10m;
     ssl_session_timeout 10m;
 
-    root /usr/share/nginx/html;
-    index index.html;
-
-    # 主站页面（SPA 路由支持）
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
+   # --- 包含通用的 SPA 配置 ---
+   include /etc/nginx/snippets/common_spa.conf;
 }
