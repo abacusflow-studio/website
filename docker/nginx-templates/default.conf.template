@@ -8,8 +8,6 @@ server {
     listen       80;
     server_name  ABACUSFLOW_WEBSITE;
 
-    set $redirect_enabled "${REDIRECT_TO_HTTPS}";
-
     if ($redirect_url) {
         # HTTP 重定向到 HTTPS
         return 301 $redirect_url;
