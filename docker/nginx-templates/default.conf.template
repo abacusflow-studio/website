@@ -1,12 +1,19 @@
 map "${REDIRECT_TO_HTTPS}" $redirect_url {
-    default "https://$host$request_uri";
-    "true" "https://$host$request_uri";
+    default "http://$host$request_uri";
+    "true" "http://$host$request_uri";
     "false" "";
 }
 
 server {
     listen       80;
     server_name  ABACUSFLOW_WEBSITE;
+
+    # 基础的反向代理请求头
+    proxy_set_header        Host               $host;
+    proxy_set_header        X-Real-IP          $remote_addr;
+    proxy_set_header        X-Forwarded-For    $proxy_add_x_forwarded_for;
+    proxy_set_header        X-Forwarded-Proto  $scheme;
+    proxy_set_header        X-Forwarded-Port   $server_port;
 
     if ($redirect_url) {
         # HTTP 重定向到 HTTPS
@@ -31,6 +38,13 @@ server {
     ssl_prefer_server_ciphers on;
     ssl_session_cache shared:SSL:10m;
     ssl_session_timeout 10m;
+
+    # 基础的反向代理请求头
+    proxy_set_header        Host               $host;
+    proxy_set_header        X-Real-IP          $remote_addr;
+    proxy_set_header        X-Forwarded-For    $proxy_add_x_forwarded_for;
+    proxy_set_header        X-Forwarded-Proto  $scheme;
+    proxy_set_header        X-Forwarded-Port   $server_port;
 
    # --- 包含通用的 SPA 配置 ---
    include /etc/nginx/snippets/common_spa.conf;
