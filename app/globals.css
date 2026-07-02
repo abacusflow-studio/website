@@ -43,6 +43,10 @@ button {
   font: inherit;
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
 .af-page {
   position: relative;
   min-height: 100vh;
@@ -251,6 +255,37 @@ button {
   justify-content: center;
   gap: 12px;
   margin-top: 24px;
+}
+
+.af-demo-credentials {
+  display: inline-flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 14px;
+  padding: 8px 12px;
+  border: 1px solid rgba(190, 215, 255, 0.16);
+  border-radius: 999px;
+  color: rgba(248, 251, 255, 0.82);
+  background: rgba(255, 255, 255, 0.065);
+  backdrop-filter: blur(14px);
+  font-size: 13px;
+}
+
+.af-demo-credentials span + span {
+  position: relative;
+  padding-left: 12px;
+}
+
+.af-demo-credentials span + span::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--cyan);
 }
 
 .af-stage {
@@ -653,6 +688,134 @@ button {
   font-size: 13px;
 }
 
+.af-footer-contact {
+  padding: 0;
+  border: 0;
+  color: rgba(170, 183, 201, 0.9);
+  background: transparent;
+}
+
+.af-footer-contact:hover {
+  color: var(--text);
+}
+
+.af-contact-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(1, 5, 14, 0.7);
+  backdrop-filter: blur(16px);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease;
+}
+
+.af-contact-backdrop.is-open,
+.af-contact-backdrop:target {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.af-contact-modal {
+  position: relative;
+  width: min(700px, 100%);
+  padding: clamp(24px, 5vw, 36px);
+  border: 1px solid rgba(190, 215, 255, 0.24);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 80% 10%, rgba(72, 217, 255, 0.16), transparent 34%),
+    rgba(8, 14, 27, 0.94);
+  box-shadow:
+    0 34px 110px rgba(0, 0, 0, 0.58),
+    0 0 58px rgba(20, 137, 255, 0.18);
+}
+
+.af-contact-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(190, 215, 255, 0.18);
+  border-radius: 50%;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.af-contact-modal h2 {
+  margin: 0 0 22px;
+  font-size: clamp(30px, 5vw, 44px);
+}
+
+.af-contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(260px, 1.22fr);
+  gap: 14px;
+}
+
+.af-contact-card {
+  display: flex;
+  min-height: 190px;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  border: 1px solid rgba(190, 215, 255, 0.16);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.af-contact-card span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.af-contact-card strong {
+  color: var(--text);
+  font-size: clamp(17px, 2.2vw, 21px);
+  word-break: break-all;
+}
+
+.af-mail-icon {
+  display: grid;
+  width: 92px;
+  height: 92px;
+  place-items: center;
+  margin: 8px auto;
+  border: 1px solid rgba(72, 217, 255, 0.28);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(72, 217, 255, 0.32), transparent 42%),
+    rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 30px rgba(20, 137, 255, 0.18);
+  font-size: 44px;
+  font-style: normal;
+}
+
+.af-contact-card[href]:hover {
+  border-color: rgba(72, 217, 255, 0.48);
+  box-shadow: 0 0 34px rgba(20, 137, 255, 0.14);
+}
+
+.af-wechat-code {
+  width: 100%;
+  height: auto;
+  margin-top: 12px;
+  border: 1px solid rgba(72, 217, 255, 0.32);
+  border-radius: var(--radius);
+  box-shadow: 0 0 24px rgba(72, 217, 255, 0.12);
+}
+
 @keyframes af-float {
   0%,
   100% {
@@ -787,6 +950,14 @@ button {
 
   .af-mobile-gallery img + img {
     margin-top: -70px;
+  }
+
+  .af-contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .af-contact-card {
+    min-height: 160px;
   }
 }
 

@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 
 const demoUrl =
   process.env.NEXT_PUBLIC_DEMO_URL || "https://app-demo.abacusflow.dpdns.org";
+const contactEmail = "1964302791@qq.com";
+const demoAccount = "test@qq.com";
+const demoPassword = "test@123";
+const wechatPlaceholder = "/static/img/contact/wechat-friend-code-placeholder.png";
 
 const showcase = [
   {
@@ -82,6 +86,7 @@ const proof = [
 
 export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [contactOpen, setContactOpen] = useState(false);
   const active = showcase[activeIndex];
 
   useEffect(() => {
@@ -98,6 +103,33 @@ export default function Home() {
 
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!contactOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setContactOpen(false);
+        if (window.location.hash === "#contact-modal") {
+          window.history.replaceState(null, "", window.location.pathname);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [contactOpen]);
+
+  const openContact = () => setContactOpen(true);
+
+  const closeContact = () => {
+    setContactOpen(false);
+    if (window.location.hash === "#contact-modal") {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  };
 
   return (
     <main className="af-page">
@@ -131,9 +163,17 @@ export default function Home() {
           <a className="af-primary" href={demoUrl}>
             打开 Web 演示
           </a>
-          <a className="af-secondary" href="#showcase">
-            看产品截图
+          <a
+            className="af-secondary"
+            href="#contact-modal"
+            onClick={openContact}
+          >
+            联系我们
           </a>
+        </div>
+        <div className="af-demo-credentials" aria-label="Web 演示登录信息">
+          <span>演示账号 {demoAccount}</span>
+          <span>密码 {demoPassword}</span>
         </div>
 
         <div className="af-stage" id="showcase">
@@ -300,9 +340,64 @@ export default function Home() {
           <a href="https://beian.miit.gov.cn" target="_blank" rel="noopener">
             鲁ICP备2025171035号
           </a>
-          <a href="mailto:1964302791@qq.com">1964302791@qq.com</a>
+          <a
+            className="af-footer-contact"
+            href="#contact-modal"
+            onClick={openContact}
+          >
+            联系我们
+          </a>
         </div>
       </footer>
+
+      <div
+        aria-labelledby="contact-title"
+        aria-modal="true"
+        className={
+          contactOpen
+            ? "af-contact-backdrop is-open"
+            : "af-contact-backdrop"
+        }
+        id="contact-modal"
+        onMouseDown={closeContact}
+        role="dialog"
+      >
+        <div
+          className="af-contact-modal"
+          onMouseDown={(event) => event.stopPropagation()}
+        >
+          <a
+            aria-label="关闭联系我们弹窗"
+            className="af-contact-close"
+            href="#top"
+            onClick={closeContact}
+          >
+            ×
+          </a>
+          <p className="af-section-kicker">Contact</p>
+          <h2 id="contact-title">联系我们</h2>
+          <div className="af-contact-grid">
+            <a className="af-contact-card" href={`mailto:${contactEmail}`}>
+              <span>QQ 邮箱</span>
+              <i className="af-mail-icon" aria-hidden="true">
+                ✉️
+              </i>
+              <strong>{contactEmail}</strong>
+            </a>
+            <div className="af-contact-card">
+              <span>微信好友码</span>
+              <Image
+                className="af-wechat-code"
+                src={wechatPlaceholder}
+                alt="微信好友码占位图"
+                width={720}
+                height={720}
+                sizes="220px"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
