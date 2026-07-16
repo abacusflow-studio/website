@@ -9,6 +9,7 @@ const contactEmail = "1964302791@qq.com";
 const demoAccount = "test@qq.com";
 const demoPassword = "test@123";
 const wechatPlaceholder = "/static/img/contact/wechat-friend-code-placeholder.png";
+const appDownloadQrPlaceholder = "/static/img/contact/app-download-qr-placeholder.png";
 
 const showcase = [
   {
@@ -16,30 +17,40 @@ const showcase = [
     tag: "全局视图",
     image: "/static/img/showcase/web/web-dashboard-overview.png",
     alt: "AbacusFlow Web 后台业务仪表盘概览截图",
+    mobile: "/static/img/showcase/mobile/mobile-entry-home.png",
+    mobileAlt: "AbacusFlow Mobile 首页截图",
   },
   {
     title: "库存管理",
     tag: "库存归属",
     image: "/static/img/showcase/web/web-inventory-management.png",
     alt: "AbacusFlow Web 后台库存管理截图",
+    mobile: "/static/img/showcase/mobile/mobile-profile-home.png",
+    mobileAlt: "AbacusFlow Mobile 库存截图",
   },
   {
     title: "采购单管理",
     tag: "采购入库",
     image: "/static/img/showcase/web/web-purchase-order.png",
     alt: "AbacusFlow Web 后台采购单管理截图",
+    mobile: "/static/img/showcase/mobile/mobile-purchase-entry.png",
+    mobileAlt: "AbacusFlow Mobile 采购录入截图",
   },
   {
     title: "销售单管理",
     tag: "销售出库",
     image: "/static/img/showcase/web/web-sale-order.png",
     alt: "AbacusFlow Web 后台销售单管理截图",
+    mobile: "/static/img/showcase/mobile/mobile-sale-entry.png",
+    mobileAlt: "AbacusFlow Mobile 销售录入截图",
   },
   {
     title: "数据刻画",
     tag: "经营分析",
     image: "/static/img/showcase/web/web-analytics-insight.png",
     alt: "AbacusFlow Web 后台数据刻画截图",
+    mobile: "/static/img/showcase/mobile/mobile-scan-lookup.png",
+    mobileAlt: "AbacusFlow Mobile 扫码查询截图",
   },
 ];
 
@@ -82,11 +93,13 @@ const proof = [
   "9 个主要业务入口",
   "Web 管理分析 + Mobile 现场录入",
   "DDD 分层设计",
+  "SaaS 订阅 · 多租户",
 ] as const;
 
 export default function Home() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [contactOpen, setContactOpen] = useState(false);
+  const [appQrOpen, setAppQrOpen] = useState(false);
   const active = showcase[activeIndex];
 
   useEffect(() => {
@@ -161,8 +174,15 @@ export default function Home() {
 
         <div className="af-actions">
           <a className="af-primary" href={demoUrl}>
-            打开 Web 演示
+            打开 网页端 演示
           </a>
+          <button
+            className="af-secondary"
+            onClick={() => setAppQrOpen(true)}
+            type="button"
+          >
+            下载 移动端 App
+          </button>
           <a
             className="af-secondary"
             href="#contact-modal"
@@ -196,8 +216,8 @@ export default function Home() {
 
           <div className="af-phone">
             <Image
-              src="/static/img/showcase/mobile/mobile-entry-home.png"
-              alt="AbacusFlow Mobile 现场首页截图"
+              src={active.mobile}
+              alt={active.mobileAlt}
               width={390}
               height={844}
               sizes="130px"
@@ -326,6 +346,10 @@ export default function Home() {
             <strong>DDD 分层设计</strong>
             <span>业务模型按领域组织，便于后续维护和扩展。</span>
           </article>
+          <article>
+            <strong>SaaS 订阅 · 多租户</strong>
+            <span>按需订阅开箱即用，租户数据隔离独立运行。</span>
+          </article>
         </div>
       </section>
 
@@ -395,6 +419,47 @@ export default function Home() {
                 sizes="220px"
               />
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        aria-labelledby="app-qr-title"
+        aria-modal="true"
+        className={
+          appQrOpen
+            ? "af-contact-backdrop is-open"
+            : "af-contact-backdrop"
+        }
+        id="app-qr-modal"
+        onMouseDown={() => setAppQrOpen(false)}
+        role="dialog"
+      >
+        <div
+          className="af-contact-modal"
+          onMouseDown={(event) => event.stopPropagation()}
+        >
+          <a
+            aria-label="关闭下载弹窗"
+            className="af-contact-close"
+            href="#top"
+            onClick={() => setAppQrOpen(false)}
+          >
+            ×
+          </a>
+          <p className="af-section-kicker">Download</p>
+          <h2 id="app-qr-title">下载 App</h2>
+          <p className="af-app-qr-hint">使用手机扫描下方二维码下载安装</p>
+          <div className="af-app-qr-card">
+            <Image
+              className="af-app-qr-code"
+              src={appDownloadQrPlaceholder}
+              alt="App 下载二维码占位图"
+              width={720}
+              height={720}
+              sizes="260px"
+            />
+            <span>扫码下载小算盘 App</span>
           </div>
         </div>
       </div>
